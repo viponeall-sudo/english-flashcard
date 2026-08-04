@@ -150,6 +150,22 @@ cursor: pointer;
 /* カード */
 .card {
 background: var(--card-bg);
+
+.image-area {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.image-area img {
+    width: 85%;        /* ← 大きめに表示 */
+    max-height: 180px; /* ← iPhoneでちょうど良い高さ */
+    border-radius: 12px;
+    object-fit: cover; /* ← 写真っぽく綺麗に収まる */
+}
+
+  
 border-radius: 20px;
 padding: 36px 24px;
 box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.1);
@@ -365,6 +381,12 @@ margin-top: 8px;
 <span class="badge badge-age" id="ageBadge"></span>
 <span class="badge badge-type" id="typeBadge"></span>
 </div>
+
+<!-- 写真を表示する場所（カード上部） -->
+<div class="image-area">
+    <img id="cardImage" src="" alt="">
+</div>
+  
 <div class="phrase-container">
 <div class="phrase" id="phrase">Loading...</div>
 <button class="audio-btn" onclick="speakPhrase(event)">🔊</button>
@@ -802,6 +824,16 @@ function showCard(index) {
     const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
     const typeMap = { "word": "単語", "phrase": "短文" };
 
+    // 写真の表示
+    const img = document.getElementById('cardImage');
+    if (item.image) {
+        img.style.display = 'block';
+        img.src = item.image;
+    } else {
+        img.style.display = 'none';
+    }
+
+  
     document.getElementById('ageBadge').innerText = ageMap[item.age];
     document.getElementById('typeBadge').innerText = typeMap[item.type];
     document.getElementById('phrase').innerText = item.phrase;
