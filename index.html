@@ -277,6 +277,13 @@ margin-top: 14px;
 font-weight: 600;
 }
 
+#randomBtn {
+    background: #ffcc00;
+    color: #333;
+    font-weight: bold;
+}
+
+    
 /* 呼び出しカード */
 .called-card-wrapper {
 display: none;
@@ -398,8 +405,10 @@ margin-top: 8px;
 
 <!-- 操作ボタン -->
 <div class="controls">
-<button class="secondary-btn" onclick="prevCard()">❮ 前へ</button>
+
+<button id="randomBtn" onclick="showRandomCard()">🔀 ランダム</button>   
 <button id="autoBtn" class="auto-btn" onclick="toggleAutoPlay()">▶ 自動再生</button>
+<button class="secondary-btn" onclick="prevCard()">❮ 前へ</button>    
 <button onclick="nextCard()">次へ ➔</button>
 </div>
 
@@ -821,6 +830,28 @@ function showCard(index) {
     document.getElementById('card').classList.remove('flipped');
     document.getElementById('hint').style.display = 'block';
 
+    // 90年代ドラゴンボール風 自動画像選択ロジック
+    const img = document.getElementById('cardImage');
+
+    function getAutoImage(word) {
+        const w = word.toLowerCase();
+
+        if (w.includes("apple")) return "（あなたのDB風画像URL）";
+        if (w.includes("dog")) return "（あなたのDB風画像URL）";
+        if (w.includes("run")) return "（あなたのDB風画像URL）";
+        if (w.includes("fight")) return "（あなたのDB風画像URL）";
+
+        return "（デフォルトのDB風背景画像URL）";
+    }
+
+    if (item.image) {
+        img.src = item.image;
+        img.style.display = "block";
+    } else {
+        img.src = getAutoImage(item.phrase);
+        img.style.display = "block";
+    }
+
     const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
     const typeMap = { "word": "単語", "phrase": "短文" };
 
@@ -840,7 +871,26 @@ function showCard(index) {
     document.getElementById('meaning').innerText = item.meaning;
     document.getElementById('note').innerText = item.note ? `💡 ${item.note}` : '';
     document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+}  // ← showCard() の終わり
+
+// ★★★ ランダム機能はここに追加 ★★★
+function showRandomCard() {
+    if (currentList.length === 0) return;
+
+    // ランダムな番号を選ぶ
+    currentIndex = Math.floor(Math.random() * currentList.length);
+
+    // カードを表示
+    showCard(currentIndex);
+
+    // 裏面はまだ見せない（英語のまま）
+    const card = document.getElementById('card');
+    card.classList.remove('flipped');
+    document.getElementById('meaning').style.display = 'none';
+    document.getElementById('note').style.display = 'none';
+    document.getElementById('hint').style.display = 'block';
 }
+
 
 function showEmptyCard() {
     document.getElementById('ageBadge').innerText = "-";
@@ -905,11 +955,39 @@ function closeCalledCard() {
 
 function flipCard() {
     if (currentList.length === 0) return;
+
     const card = document.getElementById('card');
-    card.classList.toggle('flipped');
-    document.getElementById('hint').style.display =
-        card.classList.contains('flipped') ? 'none' : 'block';
+    const hint = document.getElementById('hint');
+    const meaning = document.getElementById('meaning');
+    const note = document.getElementById('note');
+
+    // すでに裏面なら表に戻す
+    if (card.classList.contains('flipped')) {
+        card.classList.remove('flipped');
+        meaning.style.display = 'none';
+        note.style.display = 'none';
+        hint.style.display = 'block';
+        return;
+    }
+
+    // 表示までの遅延秒数（あなたが追加した設定）
+    const delaySec = Number(document.getElementById('revealDelay').value) || 0;
+
+    // 裏返す（意味はまだ非表示）
+    card.classList.add('flipped');
+    meaning.style.display = 'none';
+    note.style.display = 'none';
+    hint.style.display = 'none';
+
+    // 遅延後に日本語訳を表示
+    setTimeout(() => {
+        meaning.style.display = 'block';
+        if (note.innerText.trim() !== "") {
+            note.style.display = 'block';
+        }
+    }, delaySec * 1000);
 }
+
 
 function speakPhrase(event) {
     if (event) event.stopPropagation();
