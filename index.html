@@ -761,12 +761,15 @@ function initData() {
             const customList = JSON.parse(savedCustomData);
             allData = [...defaultData, ...customList];
         } catch (e) {
+            console.error("customFlashcards が壊れています。削除します。");
+            localStorage.removeItem('customFlashcards');
             allData = [...defaultData];
         }
     } else {
         allData = [...defaultData];
     }
 }
+
 
 function toggleAddForm() {
     document.getElementById('addForm').classList.toggle('open');
