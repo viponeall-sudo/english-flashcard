@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+英会話フラッシュカード
+</title>
+
+
+<style>
+
+
+:root{
+
+--bg:
+linear-gradient(
+135deg,
+#fff0f7,
+#eef8ff
+);
+
+--card:
+#ffffff;
+
+--main:
+#8b5cf6;
+
+--sub:
+#f9a8d4;
+
+--text:
+#374151;
+
+}
+
+
+
+*{
+
+box-sizing:border-box;
+
+}
+
+
+
+body{
+
+margin:0;
+
+padding:0;
+
+min-height:100vh;
+
+font-family:
+
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+sans-serif;
+
+
+background:
+
+var(--bg);
+
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+
+
+.container{
+
+width:100%;
+
+max-width:650px;
+
+min-height:100vh;
+
+padding:8px;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+
+
+
+/* =========================
+設定パネル
+========================= */
+
+
+.settings-panel{
+
+background:white;
+
+border-radius:22px;
+
+padding:12px;
+
+box-shadow:
+
+0 8px 20px
+rgba(0,0,0,.08);
+
+margin-bottom:8px;
+
+}
+
+
+
+.setting-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin:8px 0;
+
+font-size:15px;
+
+font-weight:bold;
+
+}
+
+
+
+select,
+input{
+
+border:0;
+
+background:#f3f4f6;
+
+padding:8px;
+
+border-radius:12px;
+
+font-size:15px;
+
+}
+
+
+
+
+
+/* =========================
+3Dカード
+========================= */
+
+
+.card-wrapper{
+
+flex:1;
+
+perspective:1200px;
+
+}
+
+
+
+.card{
+
+width:100%;
+
+height:75vh;
+
+max-height:760px;
+
+position:relative;
+
+transform-style:preserve-3d;
+
+transition:
+
+transform .8s
+cubic-bezier(.4,0,.2,1);
+
+}
+
+
+
+.card.flipped{
+
+transform:
+
+rotateY(180deg);
+
+}
+
+
+
+
+
+.card-face{
+
+position:absolute;
+
+inset:0;
+
+backface-visibility:hidden;
+
+border-radius:35px;
+
+background:white;
+
+box-shadow:
+
+0 15px 40px
+rgba(0,0,0,.15);
+
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+padding:25px;
+
+}
+
+
+
+
+.card-front{
+
+background:
+
+linear-gradient(
+
+160deg,
+
+#ffffff,
+
+#fff1f8
+
+);
+
+}
+
+
+
+.card-back{
+
+transform:
+
+rotateY(180deg);
+
+
+background:
+
+linear-gradient(
+
+160deg,
+
+#ffffff,
+
+#effbff
+
+);
+
+}
+
+
+
+
+
+/* =========================
+イラスト
+========================= */
+
+
+.illustration{
+
+width:70%;
+
+height:200px;
+
+border-radius:30px;
+
+background:#faf5ff;
+
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+
+font-size:90px;
+
+
+margin-bottom:20px;
+
+}
+
+
+
+
+
+/* =========================
+文字
+========================= */
+
+
+.phrase{
+
+font-size:
+
+clamp(
+45px,
+10vw,
+90px
+);
+
+
+font-weight:900;
+
+
+color:#7c3aed;
+
+
+text-align:center;
+
+
+line-height:1.1;
+
+
+word-break:break-word;
+
+}
+
+
+
+.meaning{
+
+font-size:
+
+clamp(
+28px,
+6vw,
+45px
+);
+
+
+font-weight:bold;
+
+
+color:#2563eb;
+
+
+text-align:center;
+
+}
+
+
+
+.note{
+
+font-size:18px;
+
+
+color:#6b7280;
+
+
+margin-top:20px;
+
+
+text-align:center;
+
+}
+
+<!-- =========================
+バッジ
+========================= -->
+
+
+.badges{
+
+position:absolute;
+
+top:20px;
+
+display:flex;
+
+gap:10px;
+
+}
+
+
+
+.badge{
+
+background:#fce7f3;
+
+padding:8px 15px;
+
+border-radius:20px;
+
+font-weight:bold;
+
+}
+
+
+
+
+
+/* =========================
+ボタン
+========================= */
+
+
+.controls{
+
+display:flex;
+
+gap:10px;
+
+margin-top:10px;
+
+}
+
+
+
+button{
+
+flex:1;
+
+border:none;
+
+border-radius:18px;
+
+padding:15px;
+
+background:#8b5cf6;
+
+color:white;
+
+font-weight:bold;
+
+font-size:16px;
+
+}
+
+
+
+.auto{
+
+background:#10b981;
+
+}
+
+
+
+.auto.active{
+
+background:#ef4444;
+
+}
+
+
+
+
+
+.count{
+
+text-align:center;
+
+margin-top:8px;
+
+font-size:16px;
+
+color:#6b7280;
+
+}
+
+
+
+
+@media(max-width:600px){
+
+
+.card{
+
+height:78vh;
+
+}
+
+
+}
+
+
+
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="container">
+
+
+
+<!-- 設定 -->
+
+<div class="settings-panel">
+
+
+<div class="setting-row">
+
+
+<label>
+
+👶 年齢
+
+</label>
+
+
+
+<select id="ageSelect">
+
+
+<option value="all">
+
+すべて
+
+</option>
+
+
+<option value="1-6">
+
+1〜6歳
+
+</option>
+
+
+<option value="7-15">
+
+7〜15歳
+
+</option>
+
+
+<option value="16+">
+
+16歳〜
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+<div class="setting-row">
+
+
+<label>
+
+📚 種類
+
+</label>
+
+
+
+<select id="typeSelect">
+
+
+<option value="all">
+
+すべて
+
+</option>
+
+
+<option value="word">
+
+単語
+
+</option>
+
+
+<option value="phrase">
+
+短文
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<!-- カード -->
+
+
+<div class="card-wrapper">
+
+
+<div class="card" id="card">
+
+
+
+<div class="card-face card-front">
+
+
+<div class="badges">
+
+
+<span class="badge" id="ageBadge">
+
+年齢
+
+</span>
+
+
+<span class="badge" id="typeBadge">
+
+種類
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="illustration" id="frontImage">
+
+🌈
+
+</div>
+
+
+
+
+<div class="phrase" id="phrase">
+
+Loading...
+
+</div>
+
+
+
+
+<button onclick="speakPhrase(event)">
+
+🔊 発音
+
+</button>
+
+
+
+
+<p>
+
+👆 タップで裏返す
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="card-face card-back">
+
+
+
+<div class="illustration" id="backImage">
+
+🖼️
+
+</div>
+
+
+
+
+<div class="meaning" id="meaning">
+
+</div>
+
+
+
+
+<div class="note" id="note">
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- 操作ボタン -->
+
+
+<div class="controls">
+
+
+<button onclick="prevCard()">
+
+❮ 前へ
+
+</button>
+
+
+
+<button
+
+class="auto"
+
+id="autoBtn"
+
+onclick="toggleAutoPlay()">
+
+
+▶ 自動再生
+
+</button>
+
+
+
+<button onclick="nextCard()">
+
+
+次へ ➜
+
+</button>
+
+
+</div>
+
+
+
+
+<div class="count" id="countInfo">
+
+
+0 / 0
+
+
+</div>
+
+
+<script>
+
+const cards = [
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Apple",
+japanese:"りんご",
+image:"🍎",
+note:"I like apples."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Dog",
+japanese:"犬",
+image:"🐶",
+note:"This is a dog."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Cat",
+japanese:"猫",
+image:"🐱",
+note:"I have a cat."
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"Good morning",
+japanese:"おはよう",
+image:"🌞",
+note:"朝のあいさつ"
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"Thank you",
+japanese:"ありがとう",
+image:"😊",
+note:"感謝を伝える言葉"
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Beautiful",
+japanese:"美しい",
+image:"🌸",
+note:"Something nice."
+},
+
+{
+age:"7〜15歳",
+type:"短文",
+english:"How are you?",
+japanese:"元気ですか？",
+image:"🙂",
+note:"基本会話"
+},
+
+{
+age:"16歳〜",
+type:"短文",
+english:"Nice to meet you.",
+japanese:"はじめまして",
+image:"🤝",
+note:"初対面のあいさつ"
+}
+{
+age:"16歳〜",
+type:"短文",
+english:"Nice to meet you.",
+japanese:"はじめまして",
+image:"🤝",
+note:"初対面のあいさつ"
+},
+
+// ← この下に追加
+{
+age:"1〜6歳",
+type:"単語",
+english:"Bird",
+japanese:"鳥",
+image:"🐦",
+note:"A bird can fly."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Fish",
+japanese:"魚",
+image:"🐟",
+note:"Fish live in water."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Sun",
+japanese:"太陽",
+image:"☀️",
+note:"The sun is bright."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Moon",
+japanese:"月",
+image:"🌙",
+note:"Look at the moon."
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"I love you.",
+japanese:"大好きです",
+image:"❤️",
+note:"気持ちを伝える表現"
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"Let's play!",
+japanese:"遊ぼう！",
+image:"⚽",
+note:"友達との会話"
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Mountain",
+japanese:"山",
+image:"🏔️",
+note:"A high mountain."
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"River",
+japanese:"川",
+image:"🏞️",
+note:"Water flows in a river."
+},
+
+{
+age:"7〜15歳",
+type:"短文",
+english:"What is your name?",
+japanese:"あなたの名前は？",
+image:"🙋",
+note:"自己紹介で使う"
+},
+
+{
+age:"7〜15歳",
+type:"短文",
+english:"I like music.",
+japanese:"音楽が好きです",
+image:"🎵",
+note:"好きなものを伝える"
+},
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Experience",
+japanese:"経験",
+image:"💼",
+note:"仕事や学習で使う"
+},
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Challenge",
+japanese:"挑戦",
+image:"🚀",
+note:"新しいことへの挑戦"
+},
+
+{
+age:"16歳〜",
+type:"短文",
+english:"I understand.",
+japanese:"理解しました",
+image:"👍",
+note:"日常会話"
+},
+
+{
+age:"16歳〜",
+type:"短文",
+english:"Could you help me?",
+japanese:"手伝っていただけますか？",
+image:"🙏",
+note:"お願いするときの表現"
+},
+{
+age:"1〜6歳",
+type:"単語",
+english:"Car",
+japanese:"車",
+image:"🚗",
+note:"A car is fast."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"House",
+japanese:"家",
+image:"🏠",
+note:"This is my house."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Tree",
+japanese:"木",
+image:"🌳",
+note:"A big green tree."
+},
+
+{
+age:"1〜6歳",
+type:"単語",
+english:"Flower",
+japanese:"花",
+image:"🌷",
+note:"Beautiful flowers."
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"I am happy.",
+japanese:"私は嬉しいです",
+image:"😄",
+note:"気持ちを表す言葉"
+},
+
+{
+age:"1〜6歳",
+type:"短文",
+english:"Good night.",
+japanese:"おやすみなさい",
+image:"🌙",
+note:"寝る前のあいさつ"
+},
+
+
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Computer",
+japanese:"コンピューター",
+image:"💻",
+note:"A useful machine."
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Library",
+japanese:"図書館",
+image:"📚",
+note:"A place with books."
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Science",
+japanese:"科学",
+image:"🔬",
+note:"Learning about the world."
+},
+
+{
+age:"7〜15歳",
+type:"単語",
+english:"Friend",
+japanese:"友達",
+image:"👫",
+note:"Someone you like."
+},
+
+{
+age:"7〜15歳",
+type:"短文",
+english:"I want to learn English.",
+japanese:"英語を学びたいです",
+image:"📖",
+note:"学習で使う表現"
+},
+
+{
+age:"7〜15歳",
+type:"短文",
+english:"Where are you going?",
+japanese:"どこへ行くの？",
+image:"🚶",
+note:"場所を聞く表現"
+},
+
+
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Communication",
+japanese:"コミュニケーション",
+image:"💬",
+note:"人との交流"
+},
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Technology",
+japanese:"技術",
+image:"⚙️",
+note:"新しい技術"
+},
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Business",
+japanese:"ビジネス",
+image:"🏢",
+note:"仕事で使う言葉"
+},
+
+{
+age:"16歳〜",
+type:"単語",
+english:"Future",
+japanese:"未来",
+image:"🌏",
+note:"これから先のこと"
+},
+
+{
+age:"16歳〜",
+type:"短文",
+english:"I will do my best.",
+japanese:"頑張ります",
+image:"💪",
+note:"努力を伝える表現"
+},
+
+{
+age:"16歳〜",
+type:"短文",
+english:"Nice to see you again.",
+japanese:"また会えて嬉しいです",
+image:"😊",
+note:"再会のあいさつ"
+}
+
+];
+
+
+
+let currentIndex = 0;
+
+let filteredCards = [...cards];
+
+let autoPlay = false;
+
+let autoTimer = null;
+
+
+
+const card =
+document.getElementById("card");
+
+const phrase =
+document.getElementById("phrase");
+
+const meaning =
+document.getElementById("meaning");
+
+const frontImage =
+document.getElementById("frontImage");
+
+const backImage =
+document.getElementById("backImage");
+
+const note =
+document.getElementById("note");
+
+const ageBadge =
+document.getElementById("ageBadge");
+
+const typeBadge =
+document.getElementById("typeBadge");
+
+const countInfo =
+document.getElementById("countInfo");
+
+
+
+
+
+function showCard(){
+
+
+if(filteredCards.length===0){
+
+phrase.textContent="データなし";
+
+meaning.textContent="";
+
+return;
+
+}
+
+
+let c =
+filteredCards[currentIndex];
+
+
+phrase.textContent =
+c.english;
+
+
+meaning.textContent =
+c.japanese;
+
+
+frontImage.textContent =
+c.image;
+
+
+backImage.textContent =
+c.image;
+
+
+note.textContent =
+c.note;
+
+
+ageBadge.textContent =
+c.age;
+
+
+typeBadge.textContent =
+c.type;
+
+
+
+countInfo.textContent =
+
+(currentIndex+1)
++
+" / "
++
+filteredCards.length;
+
+
+
+card.classList.remove("flipped");
+
+
+}
+
+
+
+
+
+
+
+function nextCard(){
+
+
+if(filteredCards.length===0)
+return;
+
+
+currentIndex++;
+
+
+if(currentIndex >= filteredCards.length){
+
+currentIndex=0;
+
+}
+
+
+showCard();
+
+
+}
+
+
+
+
+
+function prevCard(){
+
+
+if(filteredCards.length===0)
+return;
+
+
+currentIndex--;
+
+
+if(currentIndex < 0){
+
+currentIndex =
+filteredCards.length-1;
+
+}
+
+
+showCard();
+
+
+}
+
+
+
+
+
+
+
+card.addEventListener(
+"click",
+()=>{
+
+card.classList.toggle("flipped");
+
+}
+
+);
+
+
+
+
+
+
+
+
+function speakPhrase(e){
+
+
+if(e){
+
+e.stopPropagation();
+
+}
+
+
+let text =
+filteredCards[currentIndex].english;
+
+
+let speech =
+new SpeechSynthesisUtterance(text);
+
+
+speech.lang="en-US";
+
+speech.rate=0.8;
+
+
+speechSynthesis.cancel();
+
+speechSynthesis.speak(speech);
+
+
+}
+
+
+
+
+
+
+
+
+function toggleAutoPlay(){
+
+
+let btn =
+document.getElementById("autoBtn");
+
+
+
+autoPlay =
+!autoPlay;
+
+
+
+if(autoPlay){
+
+
+btn.classList.add("active");
+
+btn.textContent =
+"■ 停止";
+
+
+
+autoTimer =
+setInterval(()=>{
+
+
+speakPhrase();
+
+
+setTimeout(()=>{
+
+nextCard();
+
+},2500);
+
+
+
+},4000);
+
+
+
+}
+
+else{
+
+
+btn.classList.remove("active");
+
+
+btn.textContent =
+"▶ 自動再生";
+
+
+clearInterval(autoTimer);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+function filterCards(){
+
+
+let age =
+document.getElementById("ageSelect").value;
+
+
+let type =
+document.getElementById("typeSelect").value;
+
+
+
+filteredCards =
+cards.filter(c=>{
+
+
+let ageOK =
+age==="all" ||
+c.age===age;
+
+
+
+let typeOK =
+type==="all" ||
+
+(type==="word" && c.type==="単語") ||
+
+(type==="phrase" && c.type==="短文");
+
+
+
+return ageOK && typeOK;
+
+
+});
+
+
+
+currentIndex=0;
+
+
+showCard();
+
+
+}
+
+
+
+
+
+
+
+document
+.getElementById("ageSelect")
+.addEventListener(
+"change",
+filterCards
+);
+
+
+
+document
+.getElementById("typeSelect")
+.addEventListener(
+"change",
+filterCards
+);
+
+
+
+
+
+showCard();
+
+// ===============================
+// Part 4 完成調整版
+// ===============================
+
+
+// ランダム出題
+function randomCard(){
+
+if(filteredCards.length===0)
+return;
+
+
+currentIndex =
+Math.floor(
+Math.random()*filteredCards.length
+);
+
+
+showCard();
+
+}
+
+
+
+// キーボード操作対応
+document.addEventListener(
+"keydown",
+function(e){
+
+if(e.key==="ArrowRight"){
+
+nextCard();
+
+}
+
+
+if(e.key==="ArrowLeft"){
+
+prevCard();
+
+}
+
+
+if(e.key===" "){
+
+card.classList.toggle("flipped");
+
+}
+
+
+}
+);
+
+
+
+
+
+// 発音速度調整
+let speechRate = 0.8;
+
+
+function setSpeechRate(value){
+
+speechRate =
+Number(value);
+
+}
+
+
+
+
+
+// 画像強化表示
+function enhanceImage(){
+
+const images =
+document.querySelectorAll(
+".illustration"
+);
+
+
+images.forEach(img=>{
+
+img.style.transition=
+"transform .3s";
+
+
+img.addEventListener(
+"mouseenter",
+()=>{
+
+img.style.transform=
+"scale(1.08)";
+
+}
+);
+
+
+img.addEventListener(
+"mouseleave",
+()=>{
+
+img.style.transform=
+"scale(1)";
+
+}
+);
+
+
+});
+
+
+}
+
+
+
+enhanceImage();
+
+
+
+
+
+// 学習履歴保存
+let learnedCount =
+Number(
+localStorage.getItem(
+"learnedCount"
+)
+)
+||0;
+
+
+
+function markLearned(){
+
+learnedCount++;
+
+
+localStorage.setItem(
+"learnedCount",
+learnedCount
+);
+
+
+}
+
+
+
+
+card.addEventListener(
+"click",
+function(){
+
+if(card.classList.contains("flipped")){
+
+markLearned();
+
+}
+
+}
+);
+
+
+
+
+
+// ランダムボタン追加
+const controls =
+document.querySelector(
+".controls"
+);
+
+
+
+if(controls){
+
+
+const randomBtn =
+document.createElement(
+"button"
+);
+
+
+randomBtn.textContent =
+"🎲 ランダム";
+
+
+randomBtn.onclick =
+randomCard;
+
+
+controls.insertBefore(
+randomBtn,
+controls.children[1]
+);
+
+
+}
+
+
+
+
+
+// スマホタッチ改善
+
+let touchStartX=0;
+
+
+card.addEventListener(
+"touchstart",
+function(e){
+
+touchStartX =
+e.changedTouches[0].screenX;
+
+
+}
+);
+
+
+
+card.addEventListener(
+"touchend",
+function(e){
+
+
+let touchEndX =
+e.changedTouches[0].screenX;
+
+
+let diff =
+touchEndX-touchStartX;
+
+
+
+if(Math.abs(diff)>50){
+
+
+if(diff<0){
+
+nextCard();
+
+}
+else{
+
+prevCard();
+
+}
+
+
+}
+
+
+}
+);
+
+
+</script>
+
+</body>
+
+</html>
+
