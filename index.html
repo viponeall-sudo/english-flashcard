@@ -518,8 +518,53 @@ height:78vh;
 
 
 
+/* iPhone 画面で設定パネルがはみ出さないようにする */
+.settings-panel {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
 
+/* 設定項目を縦並びにしてはみ出し防止 */
+.setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
 
+/* 入力欄をスマホ幅に合わせる */
+.settings-panel input,
+.settings-panel select {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* スマホでボタンがはみ出さないように縦並びにする */
+@media (max-width: 600px) {
+    .controls {
+        flex-direction: column;
+    }
+
+    .controls button {
+        width: 100%;
+    }
+}
+
+/* 新規追加フォームをスマホで縦並びにする */
+@media (max-width: 600px) {
+    .setting-row input {
+        width: 100%;
+    }
+}
+
+/* 音声ボタンを小さくする */
+.card-front button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+  
 
 </style>
 
