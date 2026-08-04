@@ -751,6 +751,9 @@ let calledCardData = null;
 let autoTimer = null;
 let isAutoPlaying = false;
 
+allData = [...defaultData];
+currentList = [...defaultData];
+    
 function initData() {
     const savedCustomData = localStorage.getItem('customFlashcards');
     if (savedCustomData) {
