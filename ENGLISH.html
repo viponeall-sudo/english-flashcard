@@ -1074,8 +1074,34 @@ initData();
 filterData();
 };
   
-window.addEventListener('DOMContentLoaded', () => {
-  initData(); filterData();
+/* --- 初期化: DOMが読み込まれたらデータ初期化＆最初のカード表示を確実に行う --- */
+function initializeApp(){
+  try {
+    // default/custom データを読み込み
+    initData();
+    // フィルタに基づいて現在のリストを作り、最初のカードを表示
+    filterData();
+
+    // カードが裏向きになっていたら表に戻す（念のため）
+    const cardInner = document.getElementById('cardInner');
+    if (cardInner) cardInner.classList.remove('flipped');
+
+  } catch (err) {
+    console.error('initializeApp error:', err);
+  }
+}
+
+// 通常ロード時に確実に初期化
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// ブラウザの戻る/進むでページキャッシュ（bfcache）から復帰した場合も初期化
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) initializeApp();
+});
+
+// タブが再び表示されたとき（フォーカス回復）にも念のため再初期化
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') initializeApp();
 });
   
 </script>
