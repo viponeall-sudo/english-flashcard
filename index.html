@@ -439,8 +439,10 @@ margin-top: 8px;
 </div>
 <!-- 裏側（日本語の意味・補足） -->
 <div class="card-back">
-<div class="meaning" id="meaning"></div>
-<div class="note" id="note"></div>
+<!-- 裏面にも絵を表示 -->
+<div class="card-image" id="cardBackImage">🎨</div>  
+<div class="meaning" id="calledMeaning"></div>
+<div class="note" id="calledNote"></div>
 <div class="hint" style="margin-top: auto;">👆 タップで表に戻す</div>
 </div>
 </div>
@@ -472,6 +474,8 @@ margin-top: 8px;
 <div class="hint">👆 タップで裏返す</div>
 </div>
 <div class="card-back">
+<!-- 呼び出しカードの裏面にも絵を表示 -->
+<div class="card-image" id="calledBackImage">🎨</div>  
 <div class="meaning" id="calledMeaning"></div>
 <div class="note" id="calledNote"></div>
 <div class="hint" style="margin-top: auto;">👆 タップで表に戻す</div>
@@ -903,6 +907,7 @@ cardInner.classList.remove('flipped');
 const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
 const typeMap = { "word": "単語", "phrase": "短文" };
 document.getElementById('cardImage').innerText = item.image || '💡';
+document.getElementById('cardBackImage').innerText = item.image || '💡';  
 document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
 document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
 
@@ -1004,6 +1009,7 @@ const typeMap = { "word": "単語", "phrase": "短文" };
 
 document.getElementById('calledHeader').innerText = `📌 呼び出したカード (No. ${targetNum})`;
 document.getElementById('calledCardImage').innerText = item.image || '💡';
+document.getElementById('calledBackImage').innerText = item.image || '💡';  
 document.getElementById('calledAgeBadge').innerText = ageMap[item.age] || item.age;
 document.getElementById('calledTypeBadge').innerText = typeMap[item.type] || item.type;
 document.getElementById('calledPhrase').innerText = item.phrase;
