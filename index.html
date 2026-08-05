@@ -212,10 +212,13 @@ background: var(--card-bg);
   color: #2a1a0f;
 }
 
-/* 絵・イラスト領域（SVGを置けるボックスに） */
+/* 置き換え対象: .card-image の定義 */
 .card-image {
-  width: 240px;
-  height: 240px;
+  /* 絵文字やアイコンのサイズをフレーズと合わせる */
+  width: auto;
+  height: auto;
+  font-size: 2.35rem; /* 英語フォントと同じサイズに合わせる（必要に応じて 3rem などに調整） */
+  line-height: 1;
   margin-bottom: 10px;
   user-select: none;
   display: flex;
