@@ -6,25 +6,30 @@
 <title>英会話フラッシュカード</title>
 <style>
 :root {
---primary: #4f46e5;
---bg: #f3f4f6;
---card-bg: #ffffff;
---text: #1f2937;
+  --primary: #f97316;    /* オレンジ寄りのアクセント */
+  --bg-outer: #0b1020;   /* 夜空ダーク */
+  --bg-inner: #2b0f00;   /* 暖かい暗色でグラデ */
+  --card-bg: radial-gradient(circle at 30% 25%, rgba(255,235,200,0.95), rgba(240,130,0,0.95) 40%, rgba(200,70,0,0.95) 100%);
+  --text: #1a1a1a;
+  --accent: #ffb454;
 }
 body {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-background-color: var(--bg);
-color: var(--text);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-min-height: 100vh;
-margin: 0;
-padding: 15px;
-box-sizing: border-box;
-font-size: 20px;
+  font-family: "Helvetica Neue", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,160,50,0.06), transparent),
+              radial-gradient(800px 400px at 90% 90%, rgba(255,80,0,0.04), transparent),
+              linear-gradient(180deg, var(--bg-outer) 0%, #0b1a2b 40%, #071225 100%);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 20px;
 }
+
 .container {
 width: 100%;
 max-width: 480px;
@@ -187,23 +192,42 @@ justify-content: center;
 align-items: center;
 background: var(--card-bg);
 }
-/* 表側 */
+/* カード面の見た目をオーブ風に */
 .card-front {
-z-index: 2;
+  z-index: 2;
+  background: var(--card-bg);
+  background-blend-mode: multiply;
+  border: 6px solid rgba(255, 180, 70, 0.95);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.45),
+    inset 0 -8px 30px rgba(0,0,0,0.12);
+  border-radius: 24px;
+  color: #2b0500;
 }
 /* 裏側（オセロのように裏返った状態） */
 .card-back {
-transform: rotateY(180deg);
-background: #f8fafc;
-border: 2px solid var(--primary);
+  transform: rotateY(180deg);
+  background: linear-gradient(180deg, #fff6e8, #ffe9c7);
+  border: 4px solid rgba(240,120,0,0.95);
+  color: #2a1a0f;
 }
 
-/* 絵・イラスト領域 */
+/* 置き換え対象: .card-image の定義 */
 .card-image {
-font-size: 4rem;
-margin-bottom: 8px;
-line-height: 1;
-user-select: none;
+  /* 絵文字やアイコンのサイズをフレーズと合わせる */
+  width: auto;
+  height: auto;
+  font-size: 4.7rem; /* 英語フォントと同じサイズに合わせる（必要に応じて 3rem などに調整） */
+  line-height: 1;
+  margin-bottom: 10px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: visible;
+  /* 背景の光 */
+  filter: drop-shadow(0 10px 30px rgba(240,120,0,0.35));
 }
 
 .tags {
@@ -226,12 +250,13 @@ justify-content: center;
 gap: 12px;
 margin-bottom: 12px;
 }
+/* フレーズのスタイルをオーブに合わせる */
 .phrase {
-font-size: 2.5rem;
-font-weight: 900;
-color: var(--primary);
-line-height: 1.25;
-word-break: break-word;
+  font-size: 2.35rem;
+  font-weight: 900;
+  color: #5b0a00;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 0 rgba(255,240,220,0.9), 0 6px 18px rgba(0,0,0,0.28);
 }
 .audio-btn {
 background: none;
@@ -247,16 +272,13 @@ flex: none;
 .audio-btn:hover {
 background-color: #f3f4f6;
 }
+/* 裏側の意味・補足 */
 .meaning {
-font-size: 2.2rem;
-color: #1f2937;
-margin-bottom: 12px;
-font-weight: 800;
-}
-.note {
-font-size: 1.1rem;
-color: #4b5563;
-line-height: 1.45;
+  font-size: 1.9rem;
+  color: #3b1a0f;
+  margin-bottom: 12px;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
 }
 .hint {
 font-size: 1rem;
@@ -417,8 +439,10 @@ margin-top: 8px;
 </div>
 <!-- 裏側（日本語の意味・補足） -->
 <div class="card-back">
-<div class="meaning" id="meaning"></div>
-<div class="note" id="note"></div>
+<!-- 裏面にも絵を表示 -->
+<div class="card-image" id="cardBackImage">🎨</div>  
+<div class="meaning" id="calledMeaning"></div>
+<div class="note" id="calledNote"></div>
 <div class="hint" style="margin-top: auto;">👆 タップで表に戻す</div>
 </div>
 </div>
@@ -450,6 +474,8 @@ margin-top: 8px;
 <div class="hint">👆 タップで裏返す</div>
 </div>
 <div class="card-back">
+<!-- 呼び出しカードの裏面にも絵を表示 -->
+<div class="card-image" id="calledBackImage">🎨</div>  
 <div class="meaning" id="calledMeaning"></div>
 <div class="note" id="calledNote"></div>
 <div class="hint" style="margin-top: auto;">👆 タップで表に戻す</div>
@@ -881,6 +907,7 @@ cardInner.classList.remove('flipped');
 const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
 const typeMap = { "word": "単語", "phrase": "短文" };
 document.getElementById('cardImage').innerText = item.image || '💡';
+document.getElementById('cardBackImage').innerText = item.image || '💡';  
 document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
 document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
 
@@ -982,6 +1009,7 @@ const typeMap = { "word": "単語", "phrase": "短文" };
 
 document.getElementById('calledHeader').innerText = `📌 呼び出したカード (No. ${targetNum})`;
 document.getElementById('calledCardImage').innerText = item.image || '💡';
+document.getElementById('calledBackImage').innerText = item.image || '💡';  
 document.getElementById('calledAgeBadge').innerText = ageMap[item.age] || item.age;
 document.getElementById('calledTypeBadge').innerText = typeMap[item.type] || item.type;
 document.getElementById('calledPhrase').innerText = item.phrase;
