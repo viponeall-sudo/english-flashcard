@@ -834,7 +834,8 @@ function convertToKimetsuIcons(data) {
 // 🔥 カード表示関数（あなたの index.html には存在しないので追加）
 // ===============================
 
-function showCard(index) {
+function showCalledCard(index) {
+
     const item = kimetsuData[index];
 
     document.getElementById("calledPhrase").innerText = item.phrase;
@@ -916,7 +917,7 @@ filterData();
 const targetIndex = currentList.findIndex(item => item === newItem);
 if (targetIndex !== -1) {
 currentIndex = targetIndex;
-showCard(currentIndex);
+showCalledCard(currentIndex);
 }
 
 alert(`「${phrase}」を追加しました！`);
