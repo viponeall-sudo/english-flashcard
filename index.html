@@ -806,6 +806,55 @@ const defaultData = [
 { age: "16+", type: "phrase", image: "🛡️", phrase: "Better safe than sorry.", meaning: "転ばぬ先の杖 / 念には念を。", note: "用心して行動する時。" }
 ];
 
+  
+// ===============================
+// 🔥 鬼滅アイコン差し替えエンジン
+// ===============================
+
+// 鬼滅風アイコン（画像が揃ったら assets/icons に置くだけ）
+const kimetsuIconMap = {};
+
+// phrase → キー化（例: "Hungry" → "hungry"）
+function phraseToKey(phrase) {
+  return phrase.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+// defaultData の image を鬼滅アイコンに差し替える
+function convertToKimetsuIcons(data) {
+  return data.map(item => {
+    const key = phraseToKey(item.phrase);
+    if (kimetsuIconMap[key]) {
+      item.image = kimetsuIconMap[key];
+    }
+    return item;
+  });
+}
+
+// ===============================
+// 🔥 カード表示関数（あなたの index.html には存在しないので追加）
+// ===============================
+
+function showCard(index) {
+    const item = kimetsuData[index];
+
+    document.getElementById("calledPhrase").innerText = item.phrase;
+    document.getElementById("calledMeaning").innerText = item.meaning;
+
+    const img = document.getElementById("calledBackImage");
+    img.innerHTML = "";
+    const icon = document.createElement("img");
+    icon.src = item.image;
+    icon.className = "card-icon";
+    img.appendChild(icon);
+}
+  
+// defaultData → 鬼滅アイコン版へ変換
+const kimetsuData = convertToKimetsuIcons(defaultData);
+function showRandomCard() {
+    const index = Math.floor(Math.random() * kimetsuData.length);
+    showCard(index);
+}
+
 let allData = [];
 let currentList = [];
 let currentIndex = 0;
