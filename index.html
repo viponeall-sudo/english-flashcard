@@ -983,13 +983,9 @@ if (check) {
     filterData(); // 覚えたカードを隠す設定がONなら即反映
   };
 }
-
-
-  
+ 
 
   // 英語だけ表示モードなら裏返し禁止
-const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
-
 if (!isAutoPlaying && !englishOnly) {
   startFlipTimer();
 }
