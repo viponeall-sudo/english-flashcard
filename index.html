@@ -975,7 +975,6 @@ const isLearned = !!learnedMap[item.phrase];
 const check = document.getElementById("learnedCheck");
 if (check) {
   check.checked = isLearned;
-
   check.onchange = () => {
     const map = loadLearnedMap();
     map[item.phrase] = check.checked;
@@ -985,12 +984,12 @@ if (check) {
 }
  
 
-  // 英語だけ表示モードなら裏返し禁止
+// 英語だけ表示モードなら裏返し禁止
 if (!isAutoPlaying && !englishOnly) {
   startFlipTimer();
 }
-
 }
+
 
 
 function showEmptyCard() {
