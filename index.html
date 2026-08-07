@@ -386,6 +386,17 @@ margin-top: 8px;
 <input type="number" id="flipTimerInput" value="3" min="1" max="10"> 秒
 </div>
 </div>
+<!-- 🔤 英語だけ表示するスイッチ -->
+<div class="setting-row">
+  <label>🔤 英語だけ表示:</label>
+  <input type="checkbox" id="englishOnlySwitch" onchange="showCard(currentIndex)">
+</div>
+
+<!-- ✔ 覚えたカードを隠すスイッチ -->
+<div class="setting-row">
+  <label>✔ 覚えたカードを隠す:</label>
+  <input type="checkbox" id="hideLearnedSwitch" onchange="filterData()">
+</div>
 
 <!-- 気になるポケット（番号入力で呼び出し） -->
 <div class="pocket-section">
@@ -436,6 +447,15 @@ margin-top: 8px;
 <button class="audio-btn" onclick="speakPhrase(event)" title="発音を聞く">🔊</button>
 </div>
 <div class="hint">👆 タップで裏返す</div>
+  
+<!-- ✔ 覚えたチェックボックス -->  
+<div class="learned-row" style="margin-top: 12px; font-size: 1.2rem;">
+  <label>
+    <input type="checkbox" id="learnedCheck">
+    ✔ このカードは覚えた
+  </label>
+</div>
+ 
 </div>
 <!-- 裏側（日本語の意味・補足） -->
 <div class="card-back">
@@ -829,6 +849,21 @@ allData = [...defaultData];
 allData = [...defaultData];
 }
 }
+  
+// ▼ learned フラグを全カードに付与
+allData = allData.map(item => ({
+  ...item,
+  learned: item.learned ?? false
+}));
+
+  // ▼ 覚えたカードの保存・読み込み
+function loadLearnedMap() {
+  return JSON.parse(localStorage.getItem("learnedMap") || "{}");
+}
+
+function saveLearnedMap(map) {
+  localStorage.setItem("learnedMap", JSON.stringify(map));
+}
 
 function toggleAddForm() {
 const form = document.getElementById('addForm');
@@ -879,11 +914,14 @@ clearTimeout(flipTimer);
 
 const age = document.getElementById('ageSelect').value;
 const type = document.getElementById('typeSelect').value;
+const hideLearned = document.getElementById("hideLearnedSwitch")?.checked;
+const learnedMap = loadLearnedMap();
 
 currentList = allData.filter(item => {
-const matchAge = (age === 'all' || item.age === age);
-const matchType = (type === 'all' || item.type === type);
-return matchAge && matchType;
+  const matchAge = (age === 'all' || item.age === age);
+  const matchType = (type === 'all' || item.type === type);
+  const matchLearned = !hideLearned || !learnedMap[item.phrase];
+  return matchAge && matchType && matchLearned;
 });
 
 currentIndex = 0;
@@ -924,15 +962,38 @@ function showCard(index) {
   document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
   document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
 
+  const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
   document.getElementById('phrase').innerText = item.phrase;
-  document.getElementById('meaning').innerText = item.meaning;
-  document.getElementById('note').innerText = item.note ? `💡 ${item.note}` : '';
+  document.getElementById('meaning').innerText = englishOnly ? "" : item.meaning;
+  document.getElementById('note').innerText = englishOnly ? "" : (item.note ? `💡 ${item.note}` : '');
   document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+  
+// ▼ 覚えた管理（learnedCheck）
+const learnedMap = loadLearnedMap();
+const isLearned = !!learnedMap[item.phrase];
 
-  // 自動再生中でない場合、指定時間後にオセロのように自動的に裏返るタイマーを開始
-  if (!isAutoPlaying) {
-    startFlipTimer();
-  }
+const check = document.getElementById("learnedCheck");
+if (check) {
+  check.checked = isLearned;
+
+  check.onchange = () => {
+    const map = loadLearnedMap();
+    map[item.phrase] = check.checked;
+    saveLearnedMap(map);
+    filterData(); // 覚えたカードを隠す設定がONなら即反映
+  };
+}
+
+
+  
+
+  // 英語だけ表示モードなら裏返し禁止
+const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
+
+if (!isAutoPlaying && !englishOnly) {
+  startFlipTimer();
+}
+
 }
 
 
@@ -961,11 +1022,15 @@ function startFlipTimer() {
 }
 
 function flipCard() {
-if (currentList.length === 0) return;
-clearTimeout(flipTimer); // 手動タップしたら自動タイマー解除
-const cardInner = document.getElementById('cardInner');
-cardInner.classList.toggle('flipped');
+  const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
+  if (englishOnly) return; // ← 英語だけ表示モードなら裏返し禁止
+
+  if (currentList.length === 0) return;
+  clearTimeout(flipTimer);
+  const cardInner = document.getElementById('cardInner');
+  cardInner.classList.toggle('flipped');
 }
+
 
 function speakPhrase(event) {
 if (event) event.stopPropagation();
@@ -1033,6 +1098,10 @@ document.getElementById('calledNote').innerText = item.note ? `💡 ${item.note}
 
 const calledCardInner = document.getElementById('calledCardInner');
 calledCardInner.classList.remove('flipped');
+// 英語だけ表示モードなら常に表側固定
+if (englishOnly) {
+  cardInner.classList.remove('flipped');
+}
 
 document.getElementById('calledCardWrapper').classList.add('open');
 document.getElementById('calledCardWrapper').scrollIntoView({ behavior: 'smooth' });
