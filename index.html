@@ -949,14 +949,15 @@ document.getElementById('countInfo').innerText = "0 / 0"
 
 // 裏返るタイマーのセット
 function startFlipTimer() {
-clearTimeout(flipTimer);
-const timerSec = parseInt(document.getElementById('flipTimerInput').value, 10) || 3;
-flipTimer = setTimeout(() => {
-const cardInner = document.getElementById('cardInner');
-if (!cardInner.classList.contains('flipped')) {
-cardInner.classList.add('flipped');
-}
-}, timerSec * 1000);
+  clearTimeout(flipTimer);
+  const timerSec = parseInt(document.getElementById('flipTimerInput').value, 10) || 3;
+  // アニメーション時間(0.6s) + ユーザー設定時間 = 実際の表示時間
+  flipTimer = setTimeout(() => {
+    const cardInner = document.getElementById('cardInner');
+    if (!cardInner.classList.contains('flipped')) {
+      cardInner.classList.add('flipped');
+    }
+  }, (timerSec * 1000) + 600); // ← 600ms はアニメーション時間
 }
 
 function flipCard() {
