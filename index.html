@@ -964,9 +964,9 @@ function showCard(index) {
 
   const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
   // 英語だけ表示モードなら裏返し禁止
-if (!isAutoPlaying && !englishOnly) {
-  startFlipTimer();
-}
+  if (!isAutoPlaying && !englishOnly) {
+   startFlipTimer();
+  }
   document.getElementById('phrase').innerText = item.phrase;
   document.getElementById('meaning').innerText = englishOnly ? "" : item.meaning;
   document.getElementById('note').innerText = englishOnly ? "" : (item.note ? `💡 ${item.note}` : '');
