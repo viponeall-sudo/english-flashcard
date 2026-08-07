@@ -897,30 +897,44 @@ document.getElementById('pocketNumber').placeholder = `1〜${currentList.length}
 }
 
 function showCard(index) {
-clearTimeout(flipTimer);
+  clearTimeout(flipTimer);
 
-const cardInner = document.getElementById('cardInner');
-const item = currentList[index];
-// 表側にリセット（オセロアニメーションで表面へ）
-cardInner.classList.remove('flipped');
+  const cardInner = document.getElementById('cardInner');
+  const item = currentList[index];
 
-const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
-const typeMap = { "word": "単語", "phrase": "短文" };
-document.getElementById('cardImage').innerText = item.image || '💡';
-document.getElementById('cardBackImage').innerText = item.image || '💡';  
-document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
-document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
+  // 表側にリセット（オセロアニメーションで表面へ）
+  cardInner.classList.remove('flipped');
 
-document.getElementById('phrase').innerText = item.phrase;
-document.getElementById('meaning').innerText = item.meaning;
-document.getElementById('note').innerText = item.note ? `💡 ${item.note}` : '';
-document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+  const ageMap = { "1-6": "👶 1〜6歳", "7-15": "🧒 7〜15歳", "16+": "👱 16歳〜" };
+  const typeMap = { "word": "単語", "phrase": "短文" };
 
-// 自動再生中でない場合、指定時間後にオセロのように自動的に裏返るタイマーを開始
-if (!isAutoPlaying) {
-startFlipTimer();
+  const cardImage = document.getElementById('cardImage');
+  const cardBackImage = document.getElementById('cardBackImage');
+
+  // 画像なら <img> にする
+  if (item.image.endsWith(".png") || item.image.endsWith(".jpg") || item.image.endsWith(".jpeg")) {
+    cardImage.innerHTML = `<img src="${item.image}" class="card-icon">`;
+    cardBackImage.innerHTML = `<img src="${item.image}" class="card-icon">`;
+  } else {
+    // 絵文字の場合
+    cardImage.innerText = item.image || '💡';
+    cardBackImage.innerText = item.image || '💡';
+  }
+
+  document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
+  document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
+
+  document.getElementById('phrase').innerText = item.phrase;
+  document.getElementById('meaning').innerText = item.meaning;
+  document.getElementById('note').innerText = item.note ? `💡 ${item.note}` : '';
+  document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+
+  // 自動再生中でない場合、指定時間後にオセロのように自動的に裏返るタイマーを開始
+  if (!isAutoPlaying) {
+    startFlipTimer();
+  }
 }
-}
+
 
 function showEmptyCard() {
 clearTimeout(flipTimer);
