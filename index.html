@@ -961,8 +961,11 @@ function showCard(index) {
 
   document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
   document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
-
+  
+  cardInner.classList.remove('flipped');
+  
   const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
+  
   // 英語だけ表示モードなら裏返し禁止
   if (!isAutoPlaying && !englishOnly) {
    startFlipTimer();
@@ -986,12 +989,7 @@ if (check) {
     filterData(); // 覚えたカードを隠す設定がONなら即反映
   };
 }
- 
-
-
 }
-
-
 
 function showEmptyCard() {
 clearTimeout(flipTimer);
