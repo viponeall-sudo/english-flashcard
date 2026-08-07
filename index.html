@@ -959,21 +959,23 @@ function showCard(index) {
     cardBackImage.innerText = item.image || '💡';
   }
 
-  document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
-  document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
-  
-  cardInner.classList.remove('flipped');
-  
-  const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
-  
-  // 英語だけ表示モードなら裏返し禁止
-  if (!isAutoPlaying && !englishOnly) {
-   startFlipTimer();
-  }
-  document.getElementById('phrase').innerText = item.phrase;
-  document.getElementById('meaning').innerText = englishOnly ? "" : item.meaning;
-  document.getElementById('note').innerText = englishOnly ? "" : (item.note ? `💡 ${item.note}` : '');
-  document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+document.getElementById('ageBadge').innerText = ageMap[item.age] || item.age;
+document.getElementById('typeBadge').innerText = typeMap[item.type] || item.type;
+
+cardInner.classList.remove('flipped');
+
+const englishOnly = document.getElementById("englishOnlySwitch")?.checked;
+
+// ▼ 英語だけ表示モードなら裏返し禁止（ここに移動）
+if (!isAutoPlaying && !englishOnly) {
+  startFlipTimer();
+}
+
+document.getElementById('phrase').innerText = item.phrase;
+document.getElementById('meaning').innerText = englishOnly ? "" : item.meaning;
+document.getElementById('note').innerText = englishOnly ? "" : (item.note ? `💡 ${item.note}` : '');
+document.getElementById('countInfo').innerText = `${index + 1} / ${currentList.length}`;
+
   
 // ▼ 覚えた管理（learnedCheck）
 const learnedMap = loadLearnedMap();
